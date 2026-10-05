@@ -760,7 +760,7 @@ function updateTopicStatus(newStatus) {
 let currentUser = localStorage.getItem("trackerUser");
 
 if (!currentUser) {
-    currentUser = prompt("Apna Naam dalein (Jaise: Ramish):");
+    currentUser = prompt("Enter Your Name:");
     if (currentUser) {
         localStorage.setItem("trackerUser", currentUser.trim());
     } else {
