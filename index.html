@@ -10,18 +10,35 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header & Tabs -->
-        <div class="header">
-            <h2>Syllabus Tracker</h2>
-            <div class="tabs">
-                <!-- Tab switching ke liye onclick add kiya hai -->
-                <div class="tab active" id="tab-syllabus" onclick="switchTab('syllabus')">Syllabus</div>
-                <div class="tab" id="tab-insights" onclick="switchTab('insights')">Insights</div>
+        
+        <!-- Gradient Header with User Info -->
+        <div class="header" style="background: linear-gradient(135deg, #00897b, #004d40); padding: 25px 20px; color: white; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0, 137, 123, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                
+                <!-- Left Side: Title -->
+                <div style="text-align: left;">
+                    <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: 1px;">Syllabus Tracker</h1>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; font-weight: 500;">JRF Preparation</p>
+                </div>
+
+                <!-- Right Side: User Status -->
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; opacity: 0.8;">Logged in as</div>
+                    <div id="displayUserName" style="font-size: 15px; font-weight: bold; text-transform: capitalize;">Guest</div>
+                    <div onclick="changeUser()" style="font-size: 11px; color: #ffeb3b; cursor: pointer; margin-top: 4px; font-weight: 600; text-decoration: underline;">Change User</div>
+                </div>
+
             </div>
         </div>
 
+        <!-- Syllabus / Insights Tabs -->
+        <div class="tabs" style="margin: 0 20px 20px 20px;">
+            <div class="tab active" id="tab-syllabus" onclick="switchTab('syllabus')">Syllabus</div>
+            <div class="tab" id="tab-insights" onclick="switchTab('insights')">Insights</div>
+        </div>
+
         <!-- Syllabus List -->
-        <div id="syllabus-container"></div>
+        <div id="syllabus-container" style="padding: 0 20px;"></div>
 
         <!-- Insights Container (By default hidden) -->
         <div id="insights-container" style="display: none; padding: 15px;">
@@ -59,7 +76,7 @@
         </div>
     </div>
 
-    <!-- Bottom Popup Modal (Yahan same rahega jo pehle tha) -->
+    <!-- Bottom Popup Modal -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
     <div class="bottom-sheet" id="bottomSheet">
         <div class="sheet-header">
@@ -67,7 +84,8 @@
         </div>
         <div class="sheet-options" id="sheetOptions"></div>
     </div>
-<!-- Firebase SDKs -->
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
