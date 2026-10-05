@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syllabus Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js Library Charts ke liye -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header & Tabs -->
+        <div class="header">
+            <h2>Syllabus Tracker</h2>
+            <div class="tabs">
+                <!-- Tab switching ke liye onclick add kiya hai -->
+                <div class="tab active" id="tab-syllabus" onclick="switchTab('syllabus')">Syllabus</div>
+                <div class="tab" id="tab-insights" onclick="switchTab('insights')">Insights</div>
+            </div>
+        </div>
+
+        <!-- Syllabus List -->
+        <div id="syllabus-container"></div>
+
+        <!-- Insights Container (By default hidden) -->
+        <div id="insights-container" style="display: none; padding: 15px;">
+            
+            <!-- Overall Progress Card -->
+            <div class="insight-card">
+                <div class="overall-header">
+                    <h3>Overall Progress</h3>
+                    <h3 id="overall-percentage-text" style="color: #ff6b6b;">0.0%</h3>
+                </div>
+                <div class="unit-progress-bar-bg" style="height: 8px; margin-bottom: 20px;">
+                    <div id="overall-progress-fill" class="unit-progress-fill"></div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-dot" style="background:#555;"></div><div class="stat-count" id="stat-total">0</div><div class="stat-label">Total</div></div>
+                    <div class="stat-item"><div class="stat-dot" style="background:#4caf50;"></div><div class="stat-count" id="stat-studied">0</div><div class="stat-label">Studied</div></div>
+                    <div class="stat-item"><div class="stat-dot" style="background:#2196f3;"></div><div class="stat-count" id="stat-practise">0</div><div class="stat-label">Practise</div></div>
+                    <div class="stat-item"><div class="stat-dot" style="background:#fbc02d;"></div><div class="stat-count" id="stat-rev1">0</div><div class="stat-label">Rev. 1</div></div>
+                    <div class="stat-item"><div class="stat-dot" style="background:#ff9800;"></div><div class="stat-count" id="stat-rev2">0</div><div class="stat-label">Rev. 2</div></div>
+                </div>
+            </div>
+
+            <!-- Subject Progress Bar Chart -->
+            <div class="insight-card">
+                <h3>Subject Progress</h3>
+                <canvas id="subjectBarChart" height="200"></canvas>
+            </div>
+
+            <!-- Detailed Breakdown Donut Chart -->
+            <div class="insight-card">
+                <h3>Detailed Status Breakdown</h3>
+                <canvas id="statusDonutChart" height="200"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Popup Modal (Yahan same rahega jo pehle tha) -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+    <div class="bottom-sheet" id="bottomSheet">
+        <div class="sheet-header">
+            <h3 id="modalTopicTitle">Topic Name</h3>
+        </div>
+        <div class="sheet-options" id="sheetOptions"></div>
+    </div>
+<!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
