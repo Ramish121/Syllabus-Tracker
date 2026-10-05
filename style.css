@@ -10,11 +10,11 @@ body {
     width: 100%;
     max-width: 800px; 
     margin: 0 auto;
-    background: #fdf5f5; 
+    background: #ffffff; /* Pink ki jagah White background */
     min-height: 100vh;
     border-radius: 12px; 
     box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-    overflow: hidden; /* Nayi line: Ye kisi bhi cheez ko container se bahar nahi nikalne dega */
+    overflow: hidden; 
 }
 
 .header {
@@ -45,7 +45,7 @@ body {
 
 .tab.active {
     background: white;
-    color: #ff6b6b;
+    color: #00897b; /* Teal Green */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -174,7 +174,7 @@ body {
 }
 
 .unit-progress-fill {
-    background: #ff6b6b; /* Red color jo tab mein hai */
+    background: #00897b; /* Teal Green */
     height: 100%;
     width: 0%;
     transition: width 0.3s ease;
@@ -188,7 +188,7 @@ body {
 
 /* Insights Section Styles */
 .insight-card {
-    background: #fff5f5; /* Halke pink ka background */
+    background: #e8f5e9; /* Light Mint Green */
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
