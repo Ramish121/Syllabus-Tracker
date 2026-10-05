@@ -624,49 +624,144 @@ if (savedData) {
 let currentEditingTopic = null;
 let expandedUnits = {};
 
+// Deep Search Function (Ab sirf match hone wale topics dikhayega)
+function filterSyllabus() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    
+    document.querySelectorAll('.unit-card').forEach(card => {
+        const unitTitle = card.querySelector('.unit-header-content').innerText.toLowerCase();
+        const topics = card.querySelectorAll('.topic-item');
+        let hasVisibleTopic = false;
+
+        // Check karo ki kya unit ke main title mein search word hai
+        const unitMatch = unitTitle.includes(query);
+
+        // Har ek topic ko individually check karna
+        topics.forEach(topic => {
+            const topicText = topic.innerText.toLowerCase();
+            
+            // Agar unit ka naam match ho gaya, ya topic ka naam match ho gaya, toh topic dikhao
+            if (query === '' || unitMatch || topicText.includes(query)) {
+                topic.style.display = 'flex'; // 'flex' kyunki CSS mein display flex hai
+                hasVisibleTopic = true;
+            } else {
+                topic.style.display = 'none'; // Match nahi hua toh chupa do
+            }
+        });
+
+        // Agar unit title match hua YA koi ek bhi topic match hua toh card dikhao
+        if (query === '' || unitMatch || hasVisibleTopic) {
+            card.style.display = 'block';
+            
+            // Search karte waqt apne aap folder khul jayega
+            if (query.trim() !== '') {
+                card.querySelector('.topics-list').style.display = 'block';
+            }
+        } else {
+            card.style.display = 'none'; // Kuch match nahi hua toh poora unit hide kar do
+        }
+    });
+}
+
 function renderSyllabus() {
     const container = document.getElementById('syllabus-container');
     container.innerHTML = '';
 
+    // Search Bar
+    const searchDiv = document.createElement('div');
+    searchDiv.innerHTML = `<input type="text" id="searchInput" placeholder="Search Units & Topics..." onkeyup="filterSyllabus()" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #c8e6c9; box-sizing: border-box; font-size: 15px; outline: none; background: #fafafa;">`;
+    container.appendChild(searchDiv);
+
+    // Paper 1 Folder (Green Theme)
+    const paper1Div = document.createElement('div');
+    const paper1Header = document.createElement('div');
+    paper1Header.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 24px;">📁</span>
+            <div>
+                <div style="font-size: 16px; font-weight: bold; color: #004d40;">Paper 1 (General)</div>
+                <div style="font-size: 12px; color: #00897b;">Folder</div>
+            </div>
+        </div>
+        <div class="folder-icon" style="color: #004d40; font-size: 14px; transition: transform 0.3s ease; transform: rotate(180deg);">▼</div>
+    `;
+    paper1Header.style.cssText = "background: #e8f5e9; padding: 15px 20px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid #c8e6c9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);";
+    const paper1Content = document.createElement('div');
+    paper1Content.style.display = "block"; 
+    
+    paper1Header.onclick = () => {
+        const isBlock = paper1Content.style.display === "block";
+        paper1Content.style.display = isBlock ? "none" : "block";
+        // Click hone par icon ko rotate karna
+        paper1Header.querySelector('.folder-icon').style.transform = isBlock ? "rotate(0deg)" : "rotate(180deg)";
+    };
+    paper1Div.appendChild(paper1Header);
+    paper1Div.appendChild(paper1Content);
+
+    // Paper 2 Folder (Green Theme)
+    const paper2Div = document.createElement('div');
+    const paper2Header = document.createElement('div');
+    paper2Header.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 24px;">📁</span>
+            <div>
+                <div style="font-size: 16px; font-weight: bold; color: #004d40;">Paper 2 (Psychology)</div>
+                <div style="font-size: 12px; color: #00897b;">Folder</div>
+            </div>
+        </div>
+        <div class="folder-icon" style="color: #004d40; font-size: 14px; transition: transform 0.3s ease; transform: rotate(180deg);">▼</div>
+    `;
+    paper2Header.style.cssText = "background: #e8f5e9; padding: 15px 20px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; margin-bottom: 15px; border: 1px solid #c8e6c9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);";
+    const paper2Content = document.createElement('div');
+    paper2Content.style.display = "block"; 
+    
+    paper2Header.onclick = () => {
+        const isBlock = paper2Content.style.display === "block";
+        paper2Content.style.display = isBlock ? "none" : "block";
+        // Click hone par icon ko rotate karna
+        paper2Header.querySelector('.folder-icon').style.transform = isBlock ? "rotate(0deg)" : "rotate(180deg)";
+    };
+    paper2Div.appendChild(paper2Header);
+    paper2Div.appendChild(paper2Content);
+
+    container.appendChild(paper1Div);
+    container.appendChild(paper2Div);
+
+    // Units
     syllabusData.forEach(unit => {
-        // Strict Progress Logic Calculate karna
         const totalTopics = unit.topics.length;
-        // Sirf un topics ko gino jinka status 4 (Revision 2) hai
         const completedTopics = unit.topics.filter(t => t.status === 4).length;
         const progressPercent = totalTopics === 0 ? 0 : Math.round((completedTopics / totalTopics) * 100);
 
-        // Unit Card
+        const isExpanded = expandedUnits[unit.unitId] === true;
+
         const unitCard = document.createElement('div');
         unitCard.className = 'unit-card';
 
-        // Naya Unit Header jisme Progress Bar hai
         const header = document.createElement('div');
         header.className = 'unit-header';
-        
         header.innerHTML = `
             <div class="unit-header-content">
                 <div style="font-size: 15px;">${unit.title}</div>
                 <div class="unit-progress-wrapper">
                     <div class="unit-progress-bar-bg">
-                        <div class="unit-progress-fill" style="width: ${progressPercent}%"></div>
+                        <div class="unit-progress-fill" style="width: ${progressPercent}%;"></div>
                     </div>
                     <div class="unit-progress-text">${completedTopics}/${totalTopics} topics completed</div>
                 </div>
             </div>
-            <div style="color: #888; font-size: 14px;">▼</div>
+            <div class="unit-icon" style="color: #888; font-size: 14px; transition: transform 0.3s ease; transform: ${isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};">▼</div>
         `;
         
-        // Topics List
         const topicsList = document.createElement('div');
         topicsList.className = 'topics-list';
+        topicsList.style.display = isExpanded ? 'block' : 'none';
 
         unit.topics.forEach(topic => {
             const statusData = statusConfig[topic.status];
-            
             const topicRow = document.createElement('div');
             topicRow.className = 'topic-item';
             topicRow.onclick = () => openModal(topic.id, topic.title, topic.status);
-
             topicRow.innerHTML = `
                 <div class="status-circle ${statusData.colorClass}"></div>
                 <div class="topic-content">
@@ -680,25 +775,23 @@ function renderSyllabus() {
             topicsList.appendChild(topicRow);
         });
 
-        // NAYA LOGIC: Check karo ki kya ye unit pehle se khula hua tha
-        const isExpanded = expandedUnits[unit.unitId] === true;
-        topicsList.style.display = isExpanded ? 'block' : 'none';
-
-        // Toggle Expand/Collapse aur state save karna
         header.onclick = () => {
             const isCurrentlyBlock = topicsList.style.display === 'block';
-            if (isCurrentlyBlock) {
-                topicsList.style.display = 'none';
-                expandedUnits[unit.unitId] = false; // Band kiya toh false save karo
-            } else {
-                topicsList.style.display = 'block';
-                expandedUnits[unit.unitId] = true;  // Khola toh true save karo
-            }
+            topicsList.style.display = isCurrentlyBlock ? 'none' : 'block';
+            expandedUnits[unit.unitId] = !isCurrentlyBlock;
+            // Unit click hone par uska icon rotate karna
+            header.querySelector('.unit-icon').style.transform = isCurrentlyBlock ? "rotate(0deg)" : "rotate(180deg)";
         };
 
         unitCard.appendChild(header);
         unitCard.appendChild(topicsList);
-        container.appendChild(unitCard);
+
+        // Sorting into respective folders
+        if (unit.title.includes("Paper 1")) {
+            paper1Content.appendChild(unitCard);
+        } else {
+            paper2Content.appendChild(unitCard);
+        }
     });
 }
 
@@ -848,7 +941,7 @@ function renderInsights() {
             datasets: [{
                 label: 'Progress %',
                 data: unitProgress,
-                backgroundColor: '#ff6b6b',
+                backgroundColor: '#00897b',
                 borderRadius: 5,
                 barThickness: 15
             }]
@@ -875,8 +968,35 @@ function renderInsights() {
         options: {
             cutout: '70%',
             plugins: {
-                legend: { position: 'right', labels: { boxWidth: 12 } }
+                legend: { position: 'right', labels: { boxWidth: 12 } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.raw || 0;
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percentage = total === 0 ? 0 : Math.round((value / total) * 100);
+                            return label + ': ' + percentage + '%';
+                        }
+                    }
+                }
             }
         }
     });
+}
+
+// Screen par user ka naam update karna
+setTimeout(() => {
+    if(document.getElementById('displayUserName')) {
+        document.getElementById('displayUserName').innerText = currentUser;
+    }
+}, 200);
+
+// Naya user switch karne ka logic
+function changeUser() {
+    let confirmChange = confirm("Kya aap dusre user ki ID open karna chahte hain?");
+    if(confirmChange) {
+        localStorage.removeItem("trackerUser"); // Purana naam clear karega
+        location.reload(); // Page refresh karke naya naam poochega
+    }
 }
